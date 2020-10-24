@@ -1,0 +1,44 @@
+version: '3.3'
+services:
+  app:
+    image: fabian1233/gitlab-arm:latest
+    ports:
+      - 20022:22
+    volumes:
+     - data:/var/opt/gitlab
+     - logs:/var/log/gitlab
+     - config:/etc/gitlab
+    networks:
+     - net
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+networks:
+  net:
+    driver: overlay
+#  proxy:
+#    external: true
+
+volumes:
+  data:
+    driver: local
+    driver_opts:
+      device: /nfsdata/volumes/gitlab/data
+      o: bind
+      type: none
+
+  logs:
+    driver: local
+    driver_opts:
+      device: /nfsdata/volumes/gitlab/logs
+      o: bind
+      type: none
+
+  config:
+    driver: local
+    driver_opts:
+      device: /nfsdata/volumes/gitlab/config
+      o: bind
+      type: none

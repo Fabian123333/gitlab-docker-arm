@@ -10,4 +10,4 @@ RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 
 ADD entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT entrypoint.sh
+ENTRYPOINT /entrypoint.sh
