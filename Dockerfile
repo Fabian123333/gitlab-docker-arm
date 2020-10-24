@@ -1,4 +1,4 @@
-FROM arm32v7/debian
+FROM ubuntu
 
 RUN apt-get update
 RUN apt-get install -y curl openssh-server ca-certificates 2>&1 > /dev/null
@@ -10,4 +10,4 @@ RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 
 ADD ./entrypoint.sh /entrypoint.sh
                                   
-ENTRYPOINT /entrypoint.sh         
+ENTRYPOINT /entrypoint.sh
