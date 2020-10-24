@@ -1,13 +1,17 @@
 version: '3.3'
 services:
   app:
-    image: fabian1233/gitlab-arm:latest
+    image: 10.100.2.10:5000/gitlab-arm:latest
+    # image: fabian1233/gitlab-arm:latest
+    environment:
+      - HOSTNAME: gitlab.fschneider.at
+      - REDIS_SERVER: enable
     ports:
       - 20022:22
     volumes:
-     - data:/var/opt/gitlab
-     - logs:/var/log/gitlab
-     - config:/etc/gitlab
+     - gitlab-data:/var/opt/gitlab
+     - gitlab-logs:/var/log/gitlab
+     - gitlab-config:/etc/gitlab
     networks:
      - net
     deploy:
@@ -15,6 +19,21 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+
+    volumes:
+     - redis-data:/var/lib/redis
+     - redis-conf:/usr/local/etc/redis/redis.conf
+
+    environment:
+     - REDIS_REPLICATION_MODE=master
+
+    networks:
+     - net
+  
 networks:
   net:
     driver: overlay
@@ -22,23 +41,38 @@ networks:
 #    external: true
 
 volumes:
-  data:
+  gitlab-data:
     driver: local
     driver_opts:
       device: /nfsdata/volumes/gitlab/data
       o: bind
       type: none
 
-  logs:
+  gitlab-logs:
     driver: local
     driver_opts:
       device: /nfsdata/volumes/gitlab/logs
       o: bind
       type: none
 
-  config:
+  gitlab-config:
     driver: local
     driver_opts:
       device: /nfsdata/volumes/gitlab/config
+      o: bind
+      type: none
+
+  redis-conf:
+    driver: local
+    driver_opts:
+      device: /nfsdata/volumes/gitlab/redis.conf
+      o: bind
+      type: none
+
+
+  redis-data:
+    driver: local
+    driver_opts:
+      device: /nfsdata/volumes/gitlab/redis
       o: bind
       type: none
