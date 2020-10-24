@@ -12,7 +12,7 @@ RUN apt-get install -y          \
 # DISABLE TO USE EXTERNAL MTA
 RUN apt-get install -y postfix 2>&1 > /dev/null
 
-RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | bash
+RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | bash 2>&1 > /dev/null
 
 RUN apt install -y gitlab-ce
 
