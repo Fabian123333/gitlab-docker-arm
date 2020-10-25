@@ -32,20 +32,30 @@ services:
     command: redis-server
 
     volumes:
-     - redis-data:/var/lib/redis
+      - redis-data:/var/lib/redis
     # - redis-conf:/usr/local/etc/redis/redis.conf
 
     environment:
-     - REDIS_REPLICATION_MODE=master
+      - REDIS_REPLICATION_MODE=master
 
     networks:
-     - net
+      - net
 
   postgres:
     image: "postgres"
 
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
     environment:
       POSTGRES_PASSWORD: Start2020
+    
+    networks:
+      - net
+
+  runner:
+    image: gitlab/gitlab-runner
+    #replica: 3
     
     networks:
       - net
@@ -91,5 +101,12 @@ volumes:
     driver: local
     driver_opts:
       device: /nfsdata/volumes/gitlab/redis
+      o: bind
+      type: none
+
+  postgres-data:
+    driver: local
+    driver_opts:
+      device: /nfsdata/volumes/gitlab/postgres
       o: bind
       type: none
