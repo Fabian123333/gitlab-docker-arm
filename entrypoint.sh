@@ -73,10 +73,13 @@ fi
 
 # configure hostname
 grep -Eq "^external_url .*$HOSTNAME" /etc/gitlab/gitlab.rb ||
-	( sed -i "s~.*external_url.*~external_url  \"${HOSTNAME}\"~g" /etc/gitlab/gitlab.rb &&
-	  gitlab-ctl reconfigure )
+	sed -i "s~.*external_url.*~external_url  \"${HOSTNAME}\"~g" /etc/gitlab/gitlab.rb
+
+gitlab-ctl reconfigure
+
+gitlab-ctl tail
 
 while true; do
-	echo start
+	echo started
 	sleep 1000;
 done;
