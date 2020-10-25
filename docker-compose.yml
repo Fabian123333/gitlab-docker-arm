@@ -4,8 +4,9 @@ services:
     image: 10.100.2.10:5000/gitlab-arm:latest
     # image: fabian1233/gitlab-arm:latest
     environment:
-      - HOSTNAME: gitlab.fschneider.at
-      - REDIS_SERVER: enable
+      - "HOSTNAME=https://gitlab.fschneider.at"
+      - REDIS_SERVER=enable
+      - POSTGRES_SERVER=enable
     ports:
       - 20022:22
     volumes:
@@ -13,8 +14,14 @@ services:
      - gitlab-logs:/var/log/gitlab
      - gitlab-config:/etc/gitlab
     networks:
-     - net
+      - net
     deploy:
+      labels:
+        traefik.enable: 'true'
+        traefik.http.routers.gitlab.entrypoints: web-secured
+        traefik.http.routers.gitlab.rule: Host(`gitlab.fschneider.at`)
+        traefik.http.routers.gitlab.tls.certresolver: mytlschallenge
+        traefik.http.services.gitlab.loadbalancer.server.port: '80'
       resources:
         reservations:
           cpus: '0.25'
@@ -26,19 +33,29 @@ services:
 
     volumes:
      - redis-data:/var/lib/redis
-     - redis-conf:/usr/local/etc/redis/redis.conf
+    # - redis-conf:/usr/local/etc/redis/redis.conf
 
     environment:
      - REDIS_REPLICATION_MODE=master
 
     networks:
      - net
+
+  postgres:
+    image: "postgres"
+
+    environment:
+      POSTGRES_PASSWORD: Start2020
+    
+    networks:
+      - net
   
 networks:
   net:
     driver: overlay
 #  proxy:
 #    external: true
+
 
 volumes:
   gitlab-data:

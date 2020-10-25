@@ -16,6 +16,8 @@ RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 
 RUN apt install -y gitlab-ce
 
+VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
+
 ADD ./entrypoint.sh /entrypoint.sh
                                   
 ENTRYPOINT /entrypoint.sh
